@@ -1,3 +1,28 @@
 .colorwheel {
-    color: aquamarine;
+    display: inline-block;
+    min-height: 350px;
+}
+.app {
+    display: flex;
+    padding: 50px 0;
+}
+#root {
+    box-sizing: border-box;
+    width: 50%;
+    float: left;
+}
+#setwheel {
+    box-sizing: border-box;
+    width: 50%;
+    float: left;
+    position: relative;
+    svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+.colorthief {
+    margin: auto;
 }
