@@ -13,14 +13,14 @@ export default class Colorwheel extends Component {
         this.state = {
            
         }
-        
     }
     componentDidUpdate() {
-        const colorWheel = new ColorWheel();
-        var data = {
-            color: { r: 105, g: 0, b: 0 }
-        };
-        colorWheel.bindData(data);
+        // const colorWheel = new ColorWheel();
+        // var data = {
+        //     color: { r: 88, g: 45, b: 0 }
+        // };
+        // colorWheel.bindData(data);
+        
     }
     render() {
         return (

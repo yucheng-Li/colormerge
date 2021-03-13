@@ -119,8 +119,8 @@ class ColorWheel {
 
 var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
     // 将传入的颜色转为Hsv格式
-    console.log(color)
     this.color = tinycolor(color).toHsv();
+    console.log(this.color)
     this.name = name;
     this.show = show;
   };
@@ -140,8 +140,9 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
       var data = Array.apply(null, {length: numColors}).map(function () {
         return new ColorWheelMarkerDatum(newData.color, null, true);
       });
+
+      console.log(data)
     }
-    console.log(1)
     var markerTrails = this.$.markerTrails.selectAll(this.selector('marker-trail')).data(data);
 
     markerTrails.enter().append('line').attr({
@@ -153,12 +154,10 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
       'stroke-width': 3,
       'stroke-dasharray': '10, 6'
     });
-    console.log(2)
 
     markerTrails.exit().remove();
 
     var markers = this.$.markers.selectAll(this.selector('marker')).data(data);
-    console.log(3)
 
     markers.enter()
       .append('g')
@@ -185,10 +184,8 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
       });
 
     markers.call(this.getDragBehavior());
-    console.log(4)
 
     this.dispatch.bindData(data);
-    console.log(5)
     this.dispatch.markersUpdated();
     this.dispatch.updateEnd();
 
@@ -521,5 +518,21 @@ ColorWheel.prototype.svgToCartesian = function (x, y) {
   ColorWheel.extend = function (pluginId, pluginFn) {
     this.plugins[pluginId] = pluginFn;
   };
+
+  ColorWheel.extend('modeToggle', function (colorWheel) {
+    var modeToggle = colorWheel.container.append('select')
+      .attr('class', colorWheel.cx('mode-toggle'))
+      .on('change', function () {
+        colorWheel.currentMode = this.value;
+        colorWheel.setHarmony();
+      });
+  
+    for (var mode in ColorWheel.modes) {
+      modeToggle.append('option').text(ColorWheel.modes[mode])
+        .attr('selected', function () {
+          return ColorWheel.modes[mode] == colorWheel.currentMode ? 'selected' : null;
+        });
+    }
+  });
  
   export default ColorWheel

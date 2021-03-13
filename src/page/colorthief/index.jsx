@@ -1,10 +1,12 @@
-import React,{ Component } from 'react'
+import React,{ PureComponent } from 'react'
 import './index.scss'
 // import ColorThief from 'color-thief-react'
 import ColorThief from "colorthief";
 import ColorWheel from  '../colorwheel/newcolorwheel'
+const colorWheel = new ColorWheel();
 
-export default class Colorthief extends Component {
+
+export default class Colorthief extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -21,9 +23,8 @@ export default class Colorthief extends Component {
             palettecolor: [0, 255, 255],
             sendcolorwheel: [0, 255, 255]
         }
-        this.chooseColor = this.chooseColor.bind(this)
     }
-
+    
     componentDidUpdate() {
         this.imagemain.setAttribute('style', 'background-color:rgb'+'('+this.state.maincolor[0]+','+this.state.maincolor[1]+','+this.state.maincolor[2]+')')
         this.color1.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[0][0]+','+this.state.palettecolor[0][1]+','+this.state.palettecolor[0][2]+')')
@@ -31,13 +32,17 @@ export default class Colorthief extends Component {
         this.color3.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[2][0]+','+this.state.palettecolor[2][1]+','+this.state.palettecolor[2][2]+')')
         this.color4.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[3][0]+','+this.state.palettecolor[3][1]+','+this.state.palettecolor[3][2]+')')
         this.color5.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[4][0]+','+this.state.palettecolor[4][1]+','+this.state.palettecolor[4][2]+')')
-        const colorWheel = new ColorWheel();
         var data = {
-            color: { r: this.state.sendcolorwheel[0], g: this.state.sendcolorwheel[1], b: this.state.sendcolorwheel[2] }
+            color: { r: this.state.maincolor[0], g: this.state.maincolor[1], b: this.state.maincolor[2] }
         };
+        // data = {
+        //     color: {h:217, s:12.9, v:88.2}
+        // }
         colorWheel.bindData(data);
     }
+
     chooseColor(color) {
+        console.log(color)
         this.setState({
             sendcolorwheel: color
         })
@@ -57,8 +62,6 @@ export default class Colorthief extends Component {
                     const img = this.imgRef.current;
                     const result = colorThief.getColor(img, 25); // 25 是什么意思
                     const palette = colorThief.getPalette(img, 5);
-
-                    1
                     console.log(palette)
                     this.setState({
                         maincolor: result,
