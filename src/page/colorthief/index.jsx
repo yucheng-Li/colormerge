@@ -33,16 +33,13 @@ export default class Colorthief extends PureComponent {
         this.color4.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[3][0]+','+this.state.palettecolor[3][1]+','+this.state.palettecolor[3][2]+')')
         this.color5.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[4][0]+','+this.state.palettecolor[4][1]+','+this.state.palettecolor[4][2]+')')
         var data = {
-            color: { r: this.state.maincolor[0], g: this.state.maincolor[1], b: this.state.maincolor[2] }
+            color: { r: this.state.sendcolorwheel[0], g: this.state.sendcolorwheel[1], b: this.state.sendcolorwheel[2] }
         };
-        // data = {
-        //     color: {h:217, s:12.9, v:88.2}
-        // }
+        console.log(data)
         colorWheel.bindData(data);
     }
 
     chooseColor(color) {
-        console.log(color)
         this.setState({
             sendcolorwheel: color
         })

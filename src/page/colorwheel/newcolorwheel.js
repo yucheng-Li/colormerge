@@ -11,7 +11,7 @@ class ColorWheel {
             markerWidth  : 40,
             defaultSlice : 20,
             initRoot     : 'green',
-            initMode     : ColorWheel.modes.ANALOGOUS,
+            initMode     : ColorWheel.modes.CUSTOM,
             baseClassName: 'colorwheel',
         };
         var diameter = this.options.radius * 2;
@@ -52,9 +52,11 @@ class ColorWheel {
         this.$.markers = this.$.wheel.append('g');
     
         // --- Events ---
-    
+        // Dispatching(分发)是一个用来降低代码耦合度的便捷方式
+
         this.dispatch = d3.dispatch(
           // Markers datum has changed, so redraw as necessary, etc.
+          // Markers的数据已经改变，因此需要重新绘制
           'markersUpdated',
     
           // "updateEnd" means the state of the ColorWheel has been finished updating.
@@ -118,9 +120,11 @@ class ColorWheel {
 }
 
 var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
+
     // 将传入的颜色转为Hsv格式
+    // 这里转换的Hsv的颜色是匹配的
     this.color = tinycolor(color).toHsv();
-    console.log(this.color)
+    console.log( this.color)
     this.name = name;
     this.show = show;
   };
@@ -135,14 +139,15 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
       this.setMode(ColorWheel.modes.CUSTOM);
     } else {
       // We weren't given any data so create our own.
-      console.log(newData.color)
+      //调整要展示的颜色数量
       var numColors = (typeof newData === 'number') ? newData : 5;
       var data = Array.apply(null, {length: numColors}).map(function () {
         return new ColorWheelMarkerDatum(newData.color, null, true);
       });
-
-      console.log(data)
     }
+
+    // 定义 markerTrails 来创建一个 g 图层
+    // markerTrails 是那条虚线
     var markerTrails = this.$.markerTrails.selectAll(this.selector('marker-trail')).data(data);
 
     markerTrails.enter().append('line').attr({
@@ -157,6 +162,7 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
 
     markerTrails.exit().remove();
 
+    // marker 是那个圆圈
     var markers = this.$.markers.selectAll(this.selector('marker')).data(data);
 
     markers.enter()
@@ -182,7 +188,7 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
         fill: 'white',
         'font-size': '13px',
       });
-
+    // 给圆圈添加拖拽行为
     markers.call(this.getDragBehavior());
 
     this.dispatch.bindData(data);
@@ -191,6 +197,7 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
 
   };
 
+  // 定义了色轮中的颜色拖拽
   ColorWheel.prototype.getDragBehavior = function () {
     var self = this;
     return d3.behavior.drag()
@@ -240,16 +247,21 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
 
   ColorWheel.prototype.setHarmony = function () {
     var self = this;
+    // root 代表颜色色轮小圆圈
     var root = this.getRootMarker();
     var offsetFactor = 0.08;
     this.getMarkers().classed('root', false);
     if (! root.empty()) {
-      console.log(root.datum().h)
+      console.log(root.datum())
+      // Hue是色相,这里的色相是经过处理的
       var rootHue = ColorWheel.scientificToArtisticSmooth(root.datum().color.h);
+      console.log(rootHue)
+      // 选择不同的模式
       switch (this.currentMode) {
         case ColorWheel.modes.ANALOGOUS:
           root.classed('root', true);
           this.getVisibleMarkers().each(function (d, i) {
+            console.log(d)
             var newHue = (rootHue + (ColorWheel.markerDistance(i) * self.slice) + 720) % 360;
             d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
             d.color.s = 1;
@@ -449,6 +461,8 @@ ColorWheel.prototype.svgToCartesian = function (x, y) {
 
   // These two functions are ripped straight from Kuler source.
   // They convert between scientific hue to the color wheel's "artistic" hue.
+
+  // 光滑让艺术转换到科学
   ColorWheel.artisticToScientificSmooth = function (hue) {
     return (
       hue < 60  ? hue * (35 / 60):
@@ -459,8 +473,9 @@ ColorWheel.prototype.svgToCartesian = function (x, y) {
       hue < 330 ? this.mapRange(hue, 275, 330, 240, 300):
                   this.mapRange(hue, 330, 360, 300, 360));
   };
-
+  // 光滑让科学转换到艺术
   ColorWheel.scientificToArtisticSmooth = function (hue) {
+    console.log(hue )
     return (
       hue < 35  ? hue * (60 / 35):
       hue < 60  ? this.mapRange(hue, 35,  60,  60,  122):
