@@ -1,6 +1,6 @@
 .colorwheel {
     display: inline-block;
-    min-height: 350px;
+    // min-height: 350px;
 }
 .app {
     display: flex;
@@ -8,20 +8,13 @@
 }
 #root {
     box-sizing: border-box;
-    width: 50%;
-    float: left;
+    flex: 1;
 }
 #setwheel {
     box-sizing: border-box;
-    width: 50%;
-    float: left;
-    position: relative;
-    svg {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
+    flex: 1;
+    position: relative; 
+   
 }
 .colorthief {
     margin: auto;

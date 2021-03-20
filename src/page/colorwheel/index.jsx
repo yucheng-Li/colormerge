@@ -3,7 +3,8 @@ import './index.scss'
 // import d3 from 'd3'
 // import tinycolor from 'tinycolor'
 import  ColorWheel from './newcolorwheel'
-
+import './wheel.css'
+import './wheel.scss'
 
 
 export default class Colorwheel extends Component {
