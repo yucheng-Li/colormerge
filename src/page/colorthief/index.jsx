@@ -17,14 +17,18 @@ export default class Colorthief extends PureComponent {
         this.color3 = React.createRef();
         this.color4 = React.createRef();
         this.color5 = React.createRef();
+        this.disX = 0;
+        this.disY = 0;
 
         this.state = {
             maincolor: [0, 255, 255],
             palettecolor: [0, 255, 255],
-            sendcolorwheel: [0, 255, 255]
+            sendcolorwheel: [0, 255, 255],
+            needX: 0,
+            needY: 0
         }
     }
-    
+
     componentDidUpdate() {
         this.imagemain.setAttribute('style', 'background-color:rgb'+'('+this.state.maincolor[0]+','+this.state.maincolor[1]+','+this.state.maincolor[2]+')')
         this.color1.setAttribute('style', 'background-color:rgb'+'('+this.state.palettecolor[0][0]+','+this.state.palettecolor[0][1]+','+this.state.palettecolor[0][2]+')')
@@ -35,7 +39,7 @@ export default class Colorthief extends PureComponent {
         var data = {
             color: { r: this.state.sendcolorwheel[0], g: this.state.sendcolorwheel[1], b: this.state.sendcolorwheel[2] }
         };
-        console.log(data)
+        // console.log(data)
         colorWheel.bindData(data);
     }
 
@@ -45,26 +49,60 @@ export default class Colorthief extends PureComponent {
         })
     }
 
+    fnDown(e) {
+        // 第二步：记录拖拽起始位置，鼠标按下时document绑定onmousemove事件，实时改变元素的布局style
+        console.log(e.clientX)
+        console.log(e.target.offsetLeft)
+        this.disX = e.clientX - e.target.offsetLeft;
+        this.disY = e.clientY - e.target.offsetTop;
+        document.onmousemove = this.fnMove.bind(this);
+    }
+    fnMove(e) {
+        let x, y
+        if(e.offsetLeft < 0) {
+            x = 200
+        }else {
+            x = e.clientX - this.disX   
+        }
+
+        this.setState({
+            needX: x,
+            needY: e.clientY - this.disY
+        })
+    }
+    fnUp() {
+        // 第三步：鼠标放开时document移除onmousemove事件
+        document.onmousemove = null
+    }
+
     render() {
         return (
             <div className="colorthief">
-                <img
-                    crossOrigin={"anonymous"}
-                    ref={this.imgRef}
-                    src={require('./girl.jpg')}
-                    alt={"example"}
-                    className={"example__img"}
-                    onLoad={() => {
-                    const colorThief = new ColorThief();
-                    const img = this.imgRef.current;
-                    const result = colorThief.getColor(img, 25); // 25 是什么意思
-                    const palette = colorThief.getPalette(img, 5);
-                    console.log(palette)
-                    this.setState({
-                        maincolor: result,
-                        palettecolor: palette
-                    });
-                    }} />
+                <div className="drag-area">
+                    <img
+                        crossOrigin={"anonymous"}
+                        ref={this.imgRef}
+                        src={require('./girl.jpg')}
+                        alt={"example"}
+                        className={"example__img"}
+                        onLoad={() => {
+                        const colorThief = new ColorThief();
+                        const img = this.imgRef.current;
+                        const result = colorThief.getColor(img, 25); // 25 是什么意思
+                        const palette = colorThief.getPalette(img, 5);
+                        // console.log(palette)
+                        this.setState({
+                            maincolor: result,
+                            palettecolor: palette
+                        });
+                        }} />
+                    <div className="dragable" style={{left:this.state.needX,top:this.state.needY}}
+                        onMouseDown = {this.fnDown.bind(this)}
+                        onMouseUp = {this.fnUp.bind(this)}
+                    ></div>
+                </div>
+                
+                
                 <div className="all">   
                     <div className="setcolor main-color" ref={image => { this.imagemain = image; }}></div> 
                     <div className="setcolor-box">

@@ -124,7 +124,7 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
     // 将传入的颜色转为Hsv格式
     // 这里转换的Hsv的颜色是匹配的
     this.color = tinycolor(color).toHsv();
-    console.log( this.color)
+    // console.log( this.color)
     this.name = name;
     this.show = show;
   };
@@ -252,16 +252,16 @@ var ColorWheelMarkerDatum = function ColorWheelMarkerDatum(color, name, show) {
     var offsetFactor = 0.08;
     this.getMarkers().classed('root', false);
     if (! root.empty()) {
-      console.log(root.datum())
+      // console.log(root.datum())
       // Hue是色相,这里的色相是经过处理的
       var rootHue = ColorWheel.scientificToArtisticSmooth(root.datum().color.h);
-      console.log(rootHue)
+      // console.log(rootHue)
       // 选择不同的模式
       switch (this.currentMode) {
         case ColorWheel.modes.ANALOGOUS:
           root.classed('root', true);
           this.getVisibleMarkers().each(function (d, i) {
-            console.log(d)
+            // console.log(d)
             var newHue = (rootHue + (ColorWheel.markerDistance(i) * self.slice) + 720) % 360;
             d.color.h = ColorWheel.artisticToScientificSmooth(newHue);
             d.color.s = 1;
@@ -475,7 +475,7 @@ ColorWheel.prototype.svgToCartesian = function (x, y) {
   };
   // 光滑让科学转换到艺术
   ColorWheel.scientificToArtisticSmooth = function (hue) {
-    console.log(hue )
+    // console.log(hue )
     return (
       hue < 35  ? hue * (60 / 35):
       hue < 60  ? this.mapRange(hue, 35,  60,  60,  122):

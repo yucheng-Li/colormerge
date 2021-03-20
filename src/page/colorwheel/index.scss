@@ -18,4 +18,8 @@
 }
 .colorthief {
     margin: auto;
+    .drag-area {
+        display: inline-block;
+        position: relative;
+    }
 }
